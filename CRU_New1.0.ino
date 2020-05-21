@@ -35,7 +35,7 @@ void  loop() {
   else if (analog > ANALOG_VALUE) analogCount = 0;
 
   // Phan xac nhan trong 15S neu vi pham dieu kien duoi se reset timer
-  if(input == HIGH || analogCount == 0){
+  if(input == HIGH || analogCount > analogCount_VALUE){
     millisValue = millis();
   }
   timer = millis() - millisValue;
