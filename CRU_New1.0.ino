@@ -43,11 +43,11 @@ void  loop() {
   if (analogCount > analogCount_VALUE && flag) {
     digitalWrite(OUTPUT_SIGNAL1, OFF);
     digitalWrite(OUTPUT_SIGNAL2, OFF);
-    flag =false;
+    flag = false;
     delay(100);
   }
 
-   else if (millis() - timer > TIMER_VALUE  && !flag)  // neu trong 15s cac dieu kien A0 < value va input tac dong lien tuc thi se millis() - timer > TIMER_VALUE = true 
+   else if (timer > TIMER_VALUE  && !flag)  // neu trong 15s cac dieu kien A0 < value va input tac dong lien tuc thi se millis() - timer > TIMER_VALUE = true 
    {
     digitalWrite(OUTPUT_SIGNAL1, ON);
     digitalWrite(OUTPUT_SIGNAL2, ON); 
