@@ -31,7 +31,7 @@ void setup() {
   digitalWrite(OUTPUT_SIGNAL2, OFF);
 }
 unsigned long d5TimeRecordActive = 0, d4TimeRecordActive = 0, d5TimeRecordDeactive = 0, d4TimeRecordDeactive = 0, analogRecordBig = 0, analogTimeSmall = 0;
-bool d5Input = false, d4Input = false;
+bool d5Input = false, d4Input = false, firstFlag = true;
 bool analogFlag = false; // analog >= 1V false; analog < 1V true
 
 void  loop() {
@@ -87,15 +87,25 @@ void  loop() {
 
   if(d4Input == false && analogFlag == true && d5Input == true) // input4 = HIGH ; A0 < 1 ; input 5 = LOW
   {
-    
+    digitalWrite(OUTPUT_SIGNAL1,OFF);
+    digitalWrite(OUTPUT_SIGNAL2,ON);
+    firstFlag = true;
   }
   else if(d4Input == false && d5Input == false) // thoi gian tac dong se chinh bang D5_DEACTIVE_TIMER. dieu kien la input4 va input 5 cung tac dong
   {
-    
+    digitalWrite(OUTPUT_SIGNAL1,OFF);
+    digitalWrite(OUTPUT_SIGNAL2,OFF);
+    firstFlag = true;
   }
   else if(d4Input == true)
   {
-    
+    digitalWrite(OUTPUT_SIGNAL2,OFF)
+    if(firstFlag){
+      digitalWrite(OUTPUT_SIGNAL1,ON);
+      delay(100);
+      digitalWrite(OUTPUT_SIGNAL1,OFF);
+      firstFlag = false;
+    }
   }
 
 }
