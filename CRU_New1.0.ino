@@ -1,6 +1,6 @@
-
 // phan cung
-#define INPUT_SIGNAL 5
+#define D_INPUT4 4
+#define D_INPUT5 5
 #define OUTPUT_SIGNAL1 6
 #define OUTPUT_SIGNAL2 7
 #define ANALOG_INPUT A0
@@ -10,54 +10,92 @@
 #define OFF LOW
 
 #define ANALOG_VALUE 14
-#define TIMER_VALUE 15000
+
+// setting active la thoi gian nhan nut de tac dong, deactive la thoi gian nha? nut tac dong
+#define D4_ACTIVE_TIMER 100
+#define D4_DEACTIVE_TIMER 100
+#define D5_ACTIVE_TIMER 100
+#define D5_DEACTIVE_TIMER 15000
+#define ANALOG_ACTIVE_TIMER 100
+#define ANALOG_DEACTIVE_TIMER 100
 
 #define analogCount_VALUE 10
 
 void setup() {
   Serial.begin(9600);
-  pinMode(INPUT_SIGNAL, INPUT_PULLUP);
+  pinMode(D_INPUT4, INPUT_PULLUP);
+  pinMode(D_INPUT5, INPUT_PULLUP);
   pinMode(OUTPUT_SIGNAL1, OUTPUT);
-  digitalWrite(OUTPUT_SIGNAL1, OFF);
   pinMode(OUTPUT_SIGNAL2, OUTPUT);
+  digitalWrite(OUTPUT_SIGNAL1, OFF);
   digitalWrite(OUTPUT_SIGNAL2, OFF);
 }
-int analogCount = 0;
-bool input,flag = true;
-int analog;
-unsigned long timer,millisValue;
+unsigned long d5TimeRecordActive = 0, d4TimeRecordActive = 0, d5TimeRecordDeactive = 0, d4TimeRecordDeactive = 0, analogRecordBig = 0, analogTimeSmall = 0;
+bool d5Input = false, d4Input = false;
+bool analogFlag = false; // analog >= 1V false; analog < 1V true
+
 void  loop() {
-  input = digitalRead(INPUT_SIGNAL);
-  analog = analogRead(ANALOG_INPUT);
-  if (analogCount < 10000 && analog <= ANALOG_VALUE) {
-    analogCount++;
-  }
-  else if (analog > ANALOG_VALUE) analogCount = 0;
+  // Phan doc INPUT
 
-  // Phan xac nhan trong 15S neu vi pham dieu kien duoi se reset timer
-  if(input == HIGH || analogCount > analogCount_VALUE){
-    millisValue = millis();
-  }
-  timer = millis() - millisValue;
   
-  if (analogCount > analogCount_VALUE && flag) {
-    digitalWrite(OUTPUT_SIGNAL1, OFF);
-    digitalWrite(OUTPUT_SIGNAL2, OFF);
-    flag = false;
-    delay(100);
+  if (digitalRead(D_INPUT4) == LOW) { // neu d4 duoc tac dong
+    d4TimeRecordDeactive = millis();
+  }
+  else
+  {
+    d4TimeRecordActive = millis();
+  }
+  if (digitalRead(D_INPUT5) == LOW) { // neu d5 duoc tac dong
+    d5TimeRecordDeactive = millis();
+  }
+  else
+  {
+    d5TimeRecordActive = millis();
   }
 
-   else if (timer > TIMER_VALUE  && !flag)  // neu trong 15s cac dieu kien A0 < value va input tac dong lien tuc thi se millis() - timer > TIMER_VALUE = true 
-   {
-    digitalWrite(OUTPUT_SIGNAL1, ON);
-    digitalWrite(OUTPUT_SIGNAL2, ON); 
-    flag=true;
-    delay(100);
-   }
-  Serial.print(input);
-  Serial.print(" ");
-  Serial.print(analog);
-  Serial.print(" ");
-  Serial.println(timer);
-  delay(1);
+  if (analogRead(ANALOG_INPUT) > ANALOG_VALUE) { // analog > dien ap cho phep
+    analogTimeSmall = millis(); // reset thoi gian nho hon di
+  }
+  else
+  {
+    d5TimeRecordActive = millis(); // reset thoi gian lon hon di
+  }
+
+
+
+  if (millis() - d4TimeRecordDeactive > D4_DEACTIVE_TIMER) { // neu tin hieu nhan duoc > timer thi se tra ve thong tin cua input
+    d4Input = false; // d4 khong tac dong
+  }
+  else if (millis() - d4TimeRecordActive > D4_ACTIVE_TIMER) { // neu tin hieu nhan duoc > timer thi se tra ve thong tin cua input
+    d4Input = true; // d4  tac dong
+  }
+  if (millis() - d5TimeRecordDeactive > D5_DEACTIVE_TIMER) { // neu tin hieu nhan duoc > timer thi se tra ve thong tin cua input
+    d5Input = false; // d5 khong tac dong
+  }
+  else if (millis() - d5TimeRecordActive > D5_ACTIVE_TIMER) { // neu tin hieu nhan duoc > timer thi se tra ve thong tin cua input
+    d5Input = true; // d5  tac dong
+  }
+  if (millis() - analogTimeSmall > ANALOG_ACTIVE_TIMER) { // neu tin hieu nhan duoc > timer thi se tra ve thong tin cua input
+    analogFlag = true; // du dieu kien < 1V
+  }
+  else if (millis() - analogTimeBig > ANALOG_DEACTIVE_TIMER) { // neu tin hieu nhan duoc > timer thi se tra ve thong tin cua input
+    analogFlag = false; // KHONG du dieu kien < 1V
+  }
+
+
+  // Phan Xu ly logic va OUTPUT 
+
+  if(d4Input == false && analogFlag == true && d5Input == true) // input4 = HIGH ; A0 < 1 ; input 5 = LOW
+  {
+    
+  }
+  else if(d4Input == false && d5Input == false) // thoi gian tac dong se chinh bang D5_DEACTIVE_TIMER. dieu kien la input4 va input 5 cung tac dong
+  {
+    
+  }
+  else if(d4Input == true)
+  {
+    
+  }
+
 }
