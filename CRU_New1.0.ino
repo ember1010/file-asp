@@ -16,8 +16,8 @@
 #define D4_DEACTIVE_TIMER 100
 #define D5_ACTIVE_TIMER 100
 #define D5_DEACTIVE_TIMER 15000
-#define ANALOG_ACTIVE_TIMER 100
-#define ANALOG_DEACTIVE_TIMER 100
+#define ANALOG_ACTIVE_TIMER 100 // active la <1V
+#define ANALOG_DEACTIVE_TIMER 100 // deactive la >=1V
 
 #define analogCount_VALUE 10
 
