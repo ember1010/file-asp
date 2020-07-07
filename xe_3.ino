@@ -948,6 +948,19 @@ void analyst() {
     else if (!lineTrack) stopCard = LINETRACKSTOP;
     else if (!lightSafetySensor && !digitalLightSensorActive)  stopCard = LIGHTSENSORSTOP; //safetyFlag = safetySensor != 2  && !EMGFlag  && lineTrack && lightSafetySensor;
     UART(stopCard);
+    
+    Serial.print("DTC: ");
+    Serial.print((int)EMGFlag);Serial.print(" ");
+    Serial.print((int)lampStatus1);Serial.print(" ");
+    Serial.print((int)(!rfStopFlag));Serial.print(" ");
+    Serial.print((int)safetyFlag);Serial.print("--"); //safetyFlag = safetySensor != 2  && !EMGFlag  && lineTrack && lightSafetySensor ; 
+    Serial.print((int)(safetySensor != 2));Serial.print(" ");
+    Serial.print((int)(!EMGFlag));Serial.print(" ");
+    Serial.print((int)lineTrack);Serial.print(" ");
+    Serial.print((int)lightSafetySensor);Serial.print(" ");
+    
+    Serial.println();
+    
   }
 }
 int checkSchedule1() {
